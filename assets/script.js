@@ -7,7 +7,12 @@ const cityInputEl = document.querySelector("#search-input");
 function handleFormSubmit(event) {
   event.preventDefault();
   let city = cityInputEl.value;
+  let searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+  searchHistory.push(city);
+  localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+  console.log(searchHistory);
   currentWeather(city);
+  cityInputEl.value = "";
 }
 //capture current day weather
 
@@ -81,8 +86,8 @@ function fiveDayForecast(data) {
 
 //add event listener to the button, call a function
 
-//local storage piece  --  ["denver", "san diego"]
-
 document
   .querySelector("#search-form")
   .addEventListener("submit", handleFormSubmit);
+  
+//local storage piece  --  ["denver", "san diego"]
