@@ -13,7 +13,9 @@ function handleFormSubmit(event) {
   console.log(searchHistory);
   currentWeather(city);
   cityInputEl.value = "";
+  displaySearchHistory();
 }
+
 //capture current day weather
 
 function currentWeather(city) {
@@ -23,7 +25,7 @@ function currentWeather(city) {
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
-      renderCurrentWeather(data);
+      renderCurrentWeather(data); //call function to display current weather data
       const { lat, lon } = data.coord;
       //make api call for 5 day forecast
       const apiUrlForecast = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${APIKey}`;
@@ -31,14 +33,15 @@ function currentWeather(city) {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          fiveDayForecast(data);
+          fiveDayForecast(data); //call function to display 5 day forecast
         });
     });
-
-  //then dynamically create element to display
 }
+//then dynamically create element to display
+
 function renderCurrentWeather(data) {
   const todayEl = document.querySelector("#today");
+  todayEl.innerHTML = "";
   const nameEl = document.createElement("h2");
   nameEl.textContent = data.name;
 
@@ -63,6 +66,7 @@ function renderCurrentWeather(data) {
 
 function fiveDayForecast(data) {
   const forecastEl = document.querySelector("#forecast");
+  forecastEl.innerHTML = "";
   const titleEl = document.createElement("h3");
   titleEl.textContent = "5-Day Forecast:";
   forecastEl.appendChild(titleEl);
@@ -104,4 +108,20 @@ document
   .querySelector("#search-form")
   .addEventListener("submit", handleFormSubmit);
 
-//local storage piece  --  ["denver", "san diego"]
+//local storage display
+function displaySearchHistory() {
+  const historyContainer = document.getElementById("history"); // Get the history container element
+  historyContainer.innerHTML = ""; // Clear the current history display
+  let search = JSON.parse(localStorage.getItem("searchHistory")) || [];
+  search.forEach((city) => {
+    // For each search term
+    const searchItem = document.createElement("button"); // Create a new button element
+    searchItem.classList.add("btn", "search-button"); // Add classes to the button
+    searchItem.textContent = city; // Set the button text to the search term
+    searchItem.addEventListener("click", function () {
+      // Add click event listener to the button
+      fetchCoordinates(city); // Fetch coordinates for the clicked search term
+    });
+    historyContainer.appendChild(searchItem); // Add the button to the history container
+  });
+}
