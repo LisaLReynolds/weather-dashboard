@@ -120,7 +120,7 @@ function displaySearchHistory() {
     searchItem.textContent = city; // Set the button text to the search term
     searchItem.addEventListener("click", function () {
       // Add click event listener to the button
-      fetchCoordinates(city); // Fetch coordinates for the clicked search term
+      currentWeather(city); // Fetch coordinates for the clicked search term
     });
     historyContainer.appendChild(searchItem); // Add the button to the history container
   });
